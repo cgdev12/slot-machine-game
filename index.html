@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slot Machine</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background: #111;
+        color: white;
+    }
+    .slot-container {
+        margin-top: 30px;
+    }
+    .slots {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        font-size: 28px;
+        margin: 20px 0;
+    }
+    .slot {
+        background: #222;
+        padding: 20px;
+        border-radius: 10px;
+        width: 120px;
+    }
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        margin: 10px;
+        cursor: pointer;
+        border-radius: 8px;
+        border: none;
+    }
+    #spinBtn { background: gold; }
+    #depositBtn { background: lightgreen; }
+    input {
+        padding: 5px;
+        font-size: 16px;
+        width: 120px;
+        text-align: center;
+    }
+</style>
+</head>
+<body>
+
+<h1>🎰 Slot Machine</h1>
+<h2 id="balance">Balance: $1000</h2>
+
+<div class="slot-container">
+    <div class="slots">
+        <div class="slot" id="slot1">-</div>
+        <div class="slot" id="slot2">-</div>
+        <div class="slot" id="slot3">-</div>
+    </div>
+
+    <button id="spinBtn">Spin ($100)</button>
+
+    <div>
+        <input type="number" id="depositAmount" placeholder="Deposit $">
+        <button id="depositBtn">Deposit</button>
+    </div>
+
+    <h3 id="message"></h3>
+</div>
+
+<script>
+let balance = 1000;
+const symbols = ['Apple', 'Rolex', '7', 'Ferrari', 'Big Win', 'Cherry'];
+
+function updateBalance() {
+    document.getElementById('balance').innerText = "Balance: $" + balance;
+}
+
+function spin() {
+    if (balance < 100) {
+        document.getElementById('message').innerText = "Not enough money. Please deposit.";
+        return;
+    }
+
+    balance -= 100;
+
+    let spins = [];
+    for (let i = 0; i < 3; i++) {
+        spins.push(symbols[Math.floor(Math.random() * symbols.length)]);
+    }
+
+    document.getElementById('slot1').innerText = spins[0];
+    document.getElementById('slot2').innerText = spins[1];
+    document.getElementById('slot3').innerText = spins[2];
+
+    let message = "You lose. Try again!";
+
+    if (spins.every(s => s === 'Ferrari')) {
+        balance += 300000;
+        message = "Big winner! You get a car 🚗";
+    }
+    else if (spins.every(s => s === 'Apple')) {
+        balance += 1000;
+        message = "Big winner! You get a new phone 📱";
+    }
+    else if (spins.every(s => s === 'Rolex')) {
+        balance += 11800;
+        message = "Big winner! You get a new Rolex ⌚";
+    }
+    else if (spins.every(s => s === '7')) {
+        balance += 7000;
+        message = "Big winner! You get $7,000 💰";
+    }
+    else if (spins.every(s => s === 'Big Win')) {
+        balance += 100000000;
+        message = "JACKPOT! You won $100,000,000 🎉";
+    }
+    else if (spins.every(s => s === 'Cherry')) {
+        balance += 20000;
+        message = "Big winner! You get $20,000 🍒";
+    }
+
+    document.getElementById('message').innerText = message;
+    updateBalance();
+}
+
+function deposit() {
+    const amount = parseInt(document.getElementById('depositAmount').value);
+    if (!isNaN(amount) && amount > 0) {
+        balance += amount;
+        document.getElementById('message').innerText = "Deposited $" + amount;
+        updateBalance();
+    } else {
+        document.getElementById('message').innerText = "Enter a valid deposit amount.";
+    }
+}
+
+document.getElementById('spinBtn').addEventListener('click', spin);
+document.getElementById('depositBtn').addEventListener('click', deposit);
+
+updateBalance();
+</script>
+
+</body>
+</html>
